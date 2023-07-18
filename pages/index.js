@@ -3,13 +3,12 @@ import styles from '../styles/Home.module.css'
 import { useCallback, useState } from 'react'
 import prisma from '../lib/prisma'
 
-export async function getStaticProps() {
+export const getServerSideProps = async ({ req }) => {
   const posts = await prisma.post.findMany()
-
-  return {
-    props : { posts }
-  }
+  return { props: { posts } }
 }
+
+
 
 const fetchApi = (endpoint) => {
   return fetch(`/api/${endpoint}`).then((response) => {
