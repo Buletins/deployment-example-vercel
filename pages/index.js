@@ -1,6 +1,15 @@
 import Head from 'next/head'
 import styles from '../styles/Home.module.css'
 import { useCallback, useState } from 'react'
+import prisma from '../lib/prisma'
+
+export async function getStaticProps() {
+  const posts = await prisma.post.findMany()
+
+  return {
+    props : { posts }
+  }
+}
 
 const fetchApi = (endpoint) => {
   return fetch(`/api/${endpoint}`).then((response) => {
@@ -11,7 +20,7 @@ const fetchApi = (endpoint) => {
   })
 }
 
-export default function Home() {
+export default function Home({posts}) {
   const [isLoadingPost, setLoadingPost] = useState(false)
   const [apiResponse, setApiResponse] = useState(null)
   const [apiError, setApiError] = useState(null)
@@ -46,7 +55,11 @@ export default function Home() {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Prisma Vercel Deployment Example</h1>
-
+  <ul> 
+   {posts.map(post => (
+     <li key={post.id}>{post.title}</li>
+    ))}
+  </ul>
         <div className={styles.grid}>
           <button onClick={onGetStatus} className={styles.apiButton}>
             Check API status
